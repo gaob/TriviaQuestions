@@ -8,8 +8,8 @@ namespace iOSClient
 
         private static MobileServiceHelper _instance;
 
-        const string applicationURL = @"https://csci-e64-customapi-edu.azure-mobile.net/";
-        const string applicationKey = @"VDzJvceaeicPgfhIuoMTZJFMMAWKSQ22";
+		const string applicationURL = @"https://dotnet2.azure-mobile.net/";
+		const string applicationKey = @"vJvQmMAfYHXtPOXyVgtiPLKiaoyNVl83";
 
         private readonly MobileServiceClient _client;
 

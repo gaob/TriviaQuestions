@@ -7,11 +7,14 @@ using MonoTouch.CoreImage;
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
 using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 
 namespace iOSClient
 {
     public partial class iOSClientViewController : UIViewController
     {
+		List<QuestionItem> Questions = new List<QuestionItem> ();
+
         public iOSClientViewController(IntPtr handle)
             : base(handle)
         {
@@ -53,7 +56,7 @@ namespace iOSClient
 
 
                 // Make the call to the hello resource asynchronously 
-                var resultJson = await client.ServiceClient.InvokeApiAsync("hello", HttpMethod.Get, null);
+                var resultJson = await client.ServiceClient.InvokeApiAsync("triviaquestions", HttpMethod.Get, null);
 
                 // Understanding color in iOS http://www.iosing.com/2011/11/uicolor-understanding-colour-in-ios/
                 // A dark green: http://www.colorpicker.com/
@@ -64,11 +67,20 @@ namespace iOSClient
                 // Verfiy that a result was returned
                 if (resultJson.HasValues)
                 {
-                    // Extract the value from the result
-                    string messageResult = resultJson.Value<string>("message");
+					foreach (var item in resultJson)
+					{
+						if (item is JObject) {
+							Questions.Add(new QuestionItem(item as JObject));
+						} else {
+							throw new Exception("Unexpected type in resultJson");
+						}
+					}
 
-                    // Set the text block with the result
-                    OutputLabel.Text = messageResult;
+					// Extract the value from the result
+					string messageResult = Questions.Count.ToString();
+
+					// Set the text block with the result
+					OutputLabel.Text = messageResult;
                 }
                 else
                 {
@@ -76,8 +88,6 @@ namespace iOSClient
                     StatusLabel.BackgroundColor = UIColor.Orange;
                     OutputLabel.Text = "Nothing returned!";
                 }
-
-
             }
             catch (Exception ex)
             {
