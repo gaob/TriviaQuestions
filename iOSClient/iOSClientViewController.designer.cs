@@ -16,11 +16,19 @@ namespace iOSClient
 	{
 		[Outlet]
 		[GeneratedCode ("iOS Designer", "1.0")]
+		UIButton Bstart { get; set; }
+
+		[Outlet]
+		[GeneratedCode ("iOS Designer", "1.0")]
 		UIButton CallAPIGetButton { get; set; }
 
 		[Outlet]
 		[GeneratedCode ("iOS Designer", "1.0")]
 		UIButton CallAPIPostButton { get; set; }
+
+		[Outlet]
+		[GeneratedCode ("iOS Designer", "1.0")]
+		UILabel LEmail { get; set; }
 
 		[Outlet]
 		[GeneratedCode ("iOS Designer", "1.0")]
@@ -30,8 +38,20 @@ namespace iOSClient
 		[GeneratedCode ("iOS Designer", "1.0")]
 		UILabel StatusLabel { get; set; }
 
+		[Outlet]
+		[GeneratedCode ("iOS Designer", "1.0")]
+		UITextField TEmail { get; set; }
+
+		[Action ("Bstart_TouchUpInside:")]
+		[GeneratedCode ("iOS Designer", "1.0")]
+		partial void Bstart_TouchUpInside (UIButton sender);
+
 		void ReleaseDesignerOutlets ()
 		{
+			if (Bstart != null) {
+				Bstart.Dispose ();
+				Bstart = null;
+			}
 			if (CallAPIGetButton != null) {
 				CallAPIGetButton.Dispose ();
 				CallAPIGetButton = null;
@@ -40,6 +60,10 @@ namespace iOSClient
 				CallAPIPostButton.Dispose ();
 				CallAPIPostButton = null;
 			}
+			if (LEmail != null) {
+				LEmail.Dispose ();
+				LEmail = null;
+			}
 			if (OutputLabel != null) {
 				OutputLabel.Dispose ();
 				OutputLabel = null;
@@ -47,6 +71,10 @@ namespace iOSClient
 			if (StatusLabel != null) {
 				StatusLabel.Dispose ();
 				StatusLabel = null;
+			}
+			if (TEmail != null) {
+				TEmail.Dispose ();
+				TEmail = null;
 			}
 		}
 	}

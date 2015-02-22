@@ -44,6 +44,11 @@ namespace iOSClient
 
         }
 
+		partial void Bstart_TouchUpInside (UIButton sender)
+		{
+			throw new NotImplementedException ();
+		}
+
         async void CallAPIGetButton_TouchUpInside(object sender, EventArgs e)
         {
             try
