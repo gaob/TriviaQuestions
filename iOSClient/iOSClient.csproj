@@ -93,6 +93,7 @@
     </Compile>
     <Compile Include="Models\SessionItem.cs" />
     <Compile Include="SQLiteHelper.cs" />
+    <Compile Include="Models\SessionQuestionItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="iOSClientViewController.designer.cs">

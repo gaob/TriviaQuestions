@@ -6,7 +6,7 @@ namespace iOSClient
 	[Table("SessionItem")]
 	public class SessionItem
 	{
-		[PrimaryKey, Column("_id")]
+		[PrimaryKey]
 		public string playerid { get; set; }
 		public string sessionid { get; set; }
 

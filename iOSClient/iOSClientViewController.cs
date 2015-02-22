@@ -17,6 +17,7 @@ namespace iOSClient
     public partial class iOSClientViewController : UIViewController
     {
 		List<QuestionItem> Questions = new List<QuestionItem> ();
+		private string SessionID = string.Empty;
 
         public iOSClientViewController(IntPtr handle)
             : base(handle)
@@ -48,10 +49,11 @@ namespace iOSClient
 			//Check if session exists.
 			SQLiteHelper.Initialize ();
 			var table = SQLiteHelper.db.Table<SessionItem> ();
-			Debug.Assert (table.Count < 2);
+			Debug.Assert (table.Count() < 2);
 
-			if (table.Count == 1) {
+			if (table.Count() == 1) {
 				TEmail.Text = table.First ().playerid;
+				SessionID = table.First ().sessionid;
 			}
         }
 
@@ -62,6 +64,8 @@ namespace iOSClient
 
 			JArray JQuestions = new JArray();
 			JToken temp;
+			SessionQuestionItem tempSQ;
+			bool first_q = true;
 
 			try
 			{
@@ -76,8 +80,18 @@ namespace iOSClient
 				var resultJson = await client.ServiceClient.InvokeApiAsync("startgamesession", payload);
 
 				Debug.Assert(resultJson.Value<string>("playerid") == TEmail.Text);
+				SessionID = resultJson.Value<string>("gamesessionid");
 
-				SQLiteHelper.db.Insert(new SessionItem(resultJson.Value<string>("gamesessionid"), resultJson.Value<string>("playerid")));
+				SQLiteHelper.db.Insert(new SessionItem(SessionID, resultJson.Value<string>("playerid")));
+				foreach (QuestionItem item in Questions) {
+					tempSQ = new SessionQuestionItem();
+					tempSQ.sessionid = SessionID;
+					tempSQ.questionid = item.id;
+					tempSQ.proposedAnswer = first_q ? "X" : "?";
+					SQLiteHelper.db.Insert(tempSQ);
+
+					first_q = false;
+				}
 
 				QuestionViewController aViewController = this.Storyboard.InstantiateViewController("QuestionViewController") as QuestionViewController;
 				if (aViewController != null) {

@@ -19,6 +19,7 @@ namespace iOSClient
 		public static void Initialize()
 		{
 			SQLiteHelper.CheckTable<SessionItem> (db);
+			SQLiteHelper.CheckTable<SessionQuestionItem> (db);
 		}
 
 		public static bool TableExists<T> (SQLiteConnection connection)
