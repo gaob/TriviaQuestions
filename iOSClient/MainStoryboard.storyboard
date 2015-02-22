@@ -178,6 +178,15 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="132" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" hidden="YES">
+                                <rect key="frame" x="0.0" y="67" width="320" height="501"/>
+                                <state key="normal" title="">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="Bcover_TouchUpInside:" destination="103" id="133" eventType="touchUpInside"/>
+                                </connections>
+                            </button>
                         </subviews>
                     </view>
                     <connections>
@@ -187,6 +196,7 @@
                         <outlet property="Bthree" destination="114" id="name-outlet-114"/>
                         <outlet property="Bfour" destination="115" id="name-outlet-115"/>
                         <outlet property="StatusLabel" destination="116" id="name-outlet-116"/>
+                        <outlet property="Bcover" destination="132" id="name-outlet-132"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="105" userLabel="First Responder" sceneMemberID="firstResponder"/>

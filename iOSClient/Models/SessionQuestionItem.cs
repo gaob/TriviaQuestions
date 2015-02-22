@@ -11,9 +11,5 @@ namespace iOSClient
 		public string sessionid { get; set; }
 		public string questionid { get; set; }
 		public string proposedAnswer { get; set; }
-
-		public SessionQuestionItem ()
-		{
-		}
 	}
 }

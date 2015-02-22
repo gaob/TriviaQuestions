@@ -16,6 +16,10 @@ namespace iOSClient
 	{
 		[Outlet]
 		[GeneratedCode ("iOS Designer", "1.0")]
+		UIButton Bcover { get; set; }
+
+		[Outlet]
+		[GeneratedCode ("iOS Designer", "1.0")]
 		UIButton Bfour { get; set; }
 
 		[Outlet]
@@ -38,6 +42,10 @@ namespace iOSClient
 		[GeneratedCode ("iOS Designer", "1.0")]
 		UILabel TQText { get; set; }
 
+		[Action ("Bcover_TouchUpInside:")]
+		[GeneratedCode ("iOS Designer", "1.0")]
+		partial void Bcover_TouchUpInside (UIButton sender);
+
 		[Action ("Bfour_TouchUpInside:")]
 		[GeneratedCode ("iOS Designer", "1.0")]
 		partial void Bfour_TouchUpInside (UIButton sender);
@@ -56,6 +64,10 @@ namespace iOSClient
 
 		void ReleaseDesignerOutlets ()
 		{
+			if (Bcover != null) {
+				Bcover.Dispose ();
+				Bcover = null;
+			}
 			if (Bfour != null) {
 				Bfour.Dispose ();
 				Bfour = null;
