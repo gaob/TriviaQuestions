@@ -83,23 +83,23 @@
     <Compile Include="AppDelegate.cs" />
     <None Include="app.config" />
     <None Include="Info.plist" />
-    <Compile Include="MobileServiceHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="packages.config" />
-    <Compile Include="QuestionItem.cs" />
-    <Compile Include="QuestionViewController.cs" />
-    <Compile Include="QuestionViewController.designer.cs">
-      <DependentUpon>QuestionViewController.cs</DependentUpon>
-    </Compile>
     <Compile Include="Models\SessionItem.cs" />
-    <Compile Include="SQLiteHelper.cs" />
     <Compile Include="Models\SessionQuestionItem.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="iOSClientViewController.designer.cs">
+    <Compile Include="ViewControllers\iOSClientViewController.cs" />
+    <Compile Include="ViewControllers\iOSClientViewController.designer.cs">
       <DependentUpon>iOSClientViewController.cs</DependentUpon>
     </Compile>
-    <Compile Include="iOSClientViewController.cs" />
+    <Compile Include="ViewControllers\QuestionViewController.cs" />
+    <Compile Include="ViewControllers\QuestionViewController.designer.cs">
+      <DependentUpon>QuestionViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Models\QuestionItem.cs" />
+    <Compile Include="Helpers\MobileServiceHelper.cs" />
+    <Compile Include="Helpers\SQLiteHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <InterfaceDefinition Include="MainStoryboard.storyboard" />
     <BundleResource Include="Resources\Default-568h%402x.png" />
   </ItemGroup>
@@ -145,6 +145,8 @@
   </Target>
   <ItemGroup>
     <Folder Include="Models\" />
+    <Folder Include="ViewControllers\" />
+    <Folder Include="Helpers\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="sqlite-net">
