@@ -64,5 +64,66 @@ namespace iOSClient
 				StatusLabel.BackgroundColor = UIColor.Red;
 			}
 		}
+
+		partial void Bone_TouchUpInside (UIButton sender)
+		{
+			ProposeAnswer("1");
+		}
+
+		partial void Btwo_TouchUpInside (UIButton sender)
+		{
+			ProposeAnswer("2");
+		}
+
+		partial void Bthree_TouchUpInside (UIButton sender)
+		{
+			ProposeAnswer("3");
+		}
+
+		partial void Bfour_TouchUpInside (UIButton sender)
+		{
+			ProposeAnswer("4");
+		}
+
+		async void ProposeAnswer (string theProposedAnswer)
+		{
+			try
+			{
+				StatusLabel.Text = "Checking Answer...";
+				StatusLabel.TextColor = UIColor.White;
+				StatusLabel.BackgroundColor = UIColor.Blue;
+
+				// Create the json to send using an anonymous type 
+				JToken payload = JObject.FromObject(new { playerid = PlayerID,
+														  gamesessionid = SessionID, id = QuestionID, proposedAnswer = theProposedAnswer});
+				// Make the call to the hello resource asynchronously using POST verb
+				//var resultJson = await client.ServiceClient.InvokeApiAsync("playerprogress", HttpMethod.);
+
+				// Verfiy that a result was returned
+				/*
+				if (resultJson.HasValues)
+				{
+					// Extract the value from the result
+					string messageResult = resultJson.Value<string>("message");
+
+					// Set the text block with the result
+					OutputLabel.Text = messageResult;
+				}
+				else
+				{
+					StatusLabel.TextColor = UIColor.Black;
+					StatusLabel.BackgroundColor = UIColor.Orange;
+					OutputLabel.Text = "Nothing returned!";
+				}
+				*/
+
+			}
+			catch (Exception ex)
+			{
+				StatusLabel.Text = ex.Message;
+				StatusLabel.BackgroundColor = UIColor.Red;
+
+			}
+		}
 	}
 }

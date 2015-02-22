@@ -38,6 +38,22 @@ namespace iOSClient
 		[GeneratedCode ("iOS Designer", "1.0")]
 		UILabel TQText { get; set; }
 
+		[Action ("Bfour_TouchUpInside:")]
+		[GeneratedCode ("iOS Designer", "1.0")]
+		partial void Bfour_TouchUpInside (UIButton sender);
+
+		[Action ("Bone_TouchUpInside:")]
+		[GeneratedCode ("iOS Designer", "1.0")]
+		partial void Bone_TouchUpInside (UIButton sender);
+
+		[Action ("Bthree_TouchUpInside:")]
+		[GeneratedCode ("iOS Designer", "1.0")]
+		partial void Bthree_TouchUpInside (UIButton sender);
+
+		[Action ("Btwo_TouchUpInside:")]
+		[GeneratedCode ("iOS Designer", "1.0")]
+		partial void Btwo_TouchUpInside (UIButton sender);
+
 		void ReleaseDesignerOutlets ()
 		{
 			if (Bfour != null) {
