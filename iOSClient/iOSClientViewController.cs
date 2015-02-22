@@ -52,15 +52,27 @@ namespace iOSClient
 			JArray JQuestions = new JArray();
 			JToken temp;
 
-			foreach (QuestionItem item in Questions) {
-				temp = item.ToJToken();
-				JQuestions.Add(temp);
+			try
+			{
+				foreach (QuestionItem item in Questions) {
+					temp = item.ToJToken();
+					JQuestions.Add(temp);
+				}
+
+				payload = JObject.FromObject( new { playerid = TEmail.Text,
+										            triviaIds = JQuestions });
+
+				var resultJson = await client.ServiceClient.InvokeApiAsync("startgamesession", payload);
+
+				OutputLabel.Text = resultJson.Value<string>("gamesessionid");;
 			}
-
-			payload = JObject.FromObject( new { playerid = TEmail.Text,
-									            triviaIds = JQuestions });
-
-			var resultJson = await client.ServiceClient.InvokeApiAsync("triviaquestions", payload);
+			catch (Exception ex)
+			{
+				// Display the exception message for the demo
+				OutputLabel.Text = "";
+				StatusLabel.Text = ex.Message;
+				StatusLabel.BackgroundColor = UIColor.Red;
+			}
 		}
 
         async void CallAPIGetButton_TouchUpInside(object sender, EventArgs e)
