@@ -65,6 +65,27 @@
                                 </state>
                                 <connections/>
                             </button>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Email Address" lineBreakMode="tailTruncation" minimumFontSize="10" id="22" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" shadowOffsetHeight="0" enabled="YES">
+                                <rect key="frame" x="22" y="329" width="280" height="21"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="" borderStyle="roundedRect" minimumFontSize="17" id="23" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO">
+                                <rect key="frame" x="22" y="358" width="280" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="24" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO">
+                                <rect key="frame" x="84" y="518" width="136" height="30"/>
+                                <state key="normal" title="Start Game">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="Bstart_TouchUpInside:" destination="vXZ-lx-hvc" id="25" eventType="touchUpInside"/>
+                                </connections>
+                            </button>
                         </subviews>
                     </view>
                     <connections>
@@ -72,6 +93,9 @@
                         <outlet property="CallAPIGetButton" destination="13" id="name-outlet-13"/>
                         <outlet property="StatusLabel" destination="14" id="name-outlet-14"/>
                         <outlet property="CallAPIPostButton" destination="18" id="name-outlet-18"/>
+                        <outlet property="LEmail" destination="22" id="name-outlet-22"/>
+                        <outlet property="Bstart" destination="24" id="name-outlet-24"/>
+                        <outlet property="TEmail" destination="23" id="name-outlet-23"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>

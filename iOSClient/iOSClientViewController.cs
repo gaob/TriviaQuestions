@@ -44,9 +44,23 @@ namespace iOSClient
 
         }
 
-		partial void Bstart_TouchUpInside (UIButton sender)
+		async partial void Bstart_TouchUpInside (UIButton sender)
 		{
-			throw new NotImplementedException ();
+			// Create the json to send using an anonymous type 
+			JToken payload;
+
+			JArray JQuestions = new JArray();
+			JToken temp;
+
+			foreach (QuestionItem item in Questions) {
+				temp = item.ToJToken();
+				JQuestions.Add(temp);
+			}
+
+			payload = JObject.FromObject( new { playerid = TEmail.Text,
+									            triviaIds = JQuestions });
+
+			var resultJson = await client.ServiceClient.InvokeApiAsync("triviaquestions", payload);
 		}
 
         async void CallAPIGetButton_TouchUpInside(object sender, EventArgs e)

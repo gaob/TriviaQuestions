@@ -22,5 +22,10 @@ namespace iOSClient
 			answerThree = theObject.Value<string> ("answerThree");
 			answerFour = theObject.Value<string> ("answerFour");
 		}
+
+		public JToken ToJToken()
+		{
+			return JObject.FromObject (new { id = id});
+		}
 	}
 }
