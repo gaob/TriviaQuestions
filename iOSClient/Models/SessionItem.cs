@@ -7,13 +7,13 @@ namespace iOSClient
 	public class SessionItem
 	{
 		[PrimaryKey, Column("_id")]
-		public string Id { get; set; }
 		public string playerid { get; set; }
+		public string sessionid { get; set; }
 
 		public SessionItem (string theID, string thePlayerID)
 		{
-			Id = theID;
 			playerid = thePlayerID;
+			sessionid = theID;
 		}
 
 		public SessionItem()

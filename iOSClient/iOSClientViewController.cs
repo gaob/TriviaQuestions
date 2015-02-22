@@ -45,11 +45,13 @@ namespace iOSClient
             CallAPIGetButton.TouchUpInside += CallAPIGetButton_TouchUpInside;
             CallAPIPostButton.TouchUpInside += CallAPIPostButton_TouchUpInside;
 
-			var db = new SQLiteConnection (SQLiteHelper.dbPath);
-			SQLiteHelper.CheckTable<SessionItem> (db);
-			var table = db.Table<SessionItem> ();
-			foreach (var s in table) {
-				TEmail.Text = s.playerid;
+			//Check if session exists.
+			SQLiteHelper.Initialize ();
+			var table = SQLiteHelper.db.Table<SessionItem> ();
+			Debug.Assert (table.Count < 2);
+
+			if (table.Count == 1) {
+				TEmail.Text = table.First ().playerid;
 			}
         }
 
@@ -75,8 +77,7 @@ namespace iOSClient
 
 				Debug.Assert(resultJson.Value<string>("playerid") == TEmail.Text);
 
-				var db = new SQLiteConnection (SQLiteHelper.dbPath);
-				db.Insert(new SessionItem(resultJson.Value<string>("gamesessionid"), resultJson.Value<string>("playerid")));
+				SQLiteHelper.db.Insert(new SessionItem(resultJson.Value<string>("gamesessionid"), resultJson.Value<string>("playerid")));
 
 				QuestionViewController aViewController = this.Storyboard.InstantiateViewController("QuestionViewController") as QuestionViewController;
 				if (aViewController != null) {

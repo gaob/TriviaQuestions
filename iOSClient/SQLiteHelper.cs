@@ -10,8 +10,15 @@ namespace iOSClient
 			Environment.GetFolderPath (Environment.SpecialFolder.Personal),
 			"ormdemo.db3");
 
+		public static SQLiteConnection db = new SQLiteConnection (SQLiteHelper.dbPath);
+
 		public SQLiteHelper ()
 		{
+		}
+
+		public static void Initialize()
+		{
+			SQLiteHelper.CheckTable<SessionItem> (db);
 		}
 
 		public static bool TableExists<T> (SQLiteConnection connection)
