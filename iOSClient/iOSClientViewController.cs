@@ -19,6 +19,8 @@ namespace iOSClient
 		List<QuestionItem> Questions = new List<QuestionItem> ();
 		private string SessionID = string.Empty;
 
+		private MobileServiceHelper client;
+
         public iOSClientViewController(IntPtr handle)
             : base(handle)
         {
@@ -32,29 +34,38 @@ namespace iOSClient
             // Release any cached data, images, etc that aren't in use.
         }
 
-        private MobileServiceHelper client;
-
         #region View lifecycle
 
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
 
-            // Perform any additional setup after loading the view, typically from a nib.
-            client = MobileServiceHelper.DefaultService;
+			try
+			{
+	            // Perform any additional setup after loading the view, typically from a nib.
+	            client = MobileServiceHelper.DefaultService;
 
-            CallAPIGetButton.TouchUpInside += CallAPIGetButton_TouchUpInside;
-            CallAPIPostButton.TouchUpInside += CallAPIPostButton_TouchUpInside;
+				//Check if session exists.
+				SQLiteHelper.Initialize ();
+				var table = SQLiteHelper.db.Table<SessionItem> ();
+				Debug.Assert (table.Count() < 2);
 
-			//Check if session exists.
-			SQLiteHelper.Initialize ();
-			var table = SQLiteHelper.db.Table<SessionItem> ();
-			Debug.Assert (table.Count() < 2);
+				if (table.Count() == 1) {
+					TEmail.Text = table.First ().playerid;
+					SessionID = table.First ().sessionid;
+				}
 
-			if (table.Count() == 1) {
-				TEmail.Text = table.First ().playerid;
-				SessionID = table.First ().sessionid;
+				SQLiteHelper.db.DeleteAll<SessionItem>();
 			}
+			catch (Exception ex)
+			{
+				// Display the exception message for the demo
+				StatusLabel.Text = ex.Message;
+				StatusLabel.BackgroundColor = UIColor.Red;
+			}
+
+			CallAPIGetButton.TouchUpInside += CallAPIGetButton_TouchUpInside;
+			CallAPIPostButton.TouchUpInside += CallAPIPostButton_TouchUpInside;
         }
 
 		async partial void Bstart_TouchUpInside (UIButton sender)
@@ -87,7 +98,7 @@ namespace iOSClient
 					tempSQ = new SessionQuestionItem();
 					tempSQ.sessionid = SessionID;
 					tempSQ.questionid = item.id;
-					tempSQ.proposedAnswer = first_q ? "X" : "?";
+					tempSQ.proposedAnswer = first_q ? "!" : "?";
 					SQLiteHelper.db.Insert(tempSQ);
 
 					first_q = false;
