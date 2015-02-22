@@ -8,6 +8,9 @@ using MonoTouch.Foundation;
 using MonoTouch.UIKit;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using System.IO;
+using SQLite;
+using System.Diagnostics;
 
 namespace iOSClient
 {
@@ -42,6 +45,12 @@ namespace iOSClient
             CallAPIGetButton.TouchUpInside += CallAPIGetButton_TouchUpInside;
             CallAPIPostButton.TouchUpInside += CallAPIPostButton_TouchUpInside;
 
+			var db = new SQLiteConnection (SQLiteHelper.dbPath);
+			SQLiteHelper.CheckTable<SessionItem> (db);
+			var table = db.Table<SessionItem> ();
+			foreach (var s in table) {
+				TEmail.Text = s.playerid;
+			}
         }
 
 		async partial void Bstart_TouchUpInside (UIButton sender)
@@ -64,12 +73,21 @@ namespace iOSClient
 
 				var resultJson = await client.ServiceClient.InvokeApiAsync("startgamesession", payload);
 
-				OutputLabel.Text = resultJson.Value<string>("gamesessionid");;
+				Debug.Assert(resultJson.Value<string>("playerid") == TEmail.Text);
+
+				var db = new SQLiteConnection (SQLiteHelper.dbPath);
+				db.Insert(new SessionItem(resultJson.Value<string>("gamesessionid"), resultJson.Value<string>("playerid")));
+
+				QuestionViewController aViewController = this.Storyboard.InstantiateViewController("QuestionViewController") as QuestionViewController;
+				if (aViewController != null) {
+					this.NavigationController.PushViewController(aViewController, true);
+				} else {
+					StatusLabel.Text = "Start Game Board Error!";
+				}
 			}
 			catch (Exception ex)
 			{
 				// Display the exception message for the demo
-				OutputLabel.Text = "";
 				StatusLabel.Text = ex.Message;
 				StatusLabel.BackgroundColor = UIColor.Red;
 			}
