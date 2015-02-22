@@ -97,32 +97,50 @@ namespace iOSClient
 				JToken payload = JObject.FromObject(new { playerid = PlayerID,
 														  gamesessionid = SessionID, id = QuestionID, proposedAnswer = theProposedAnswer});
 				// Make the call to the hello resource asynchronously using POST verb
-				//var resultJson = await client.ServiceClient.InvokeApiAsync("playerprogress", HttpMethod.);
+				var resultJson = await client.ServiceClient.InvokeApiAsync("playerprogress", payload, new HttpMethod("PATCH"), null);
 
-				// Verfiy that a result was returned
-				/*
 				if (resultJson.HasValues)
 				{
 					// Extract the value from the result
-					string messageResult = resultJson.Value<string>("message");
+					string messageResult = resultJson.Value<string>("answerEvaluation");
 
-					// Set the text block with the result
-					OutputLabel.Text = messageResult;
+					UIButton theButton = getButtonFrom(theProposedAnswer);
+
+					if (messageResult == "correct") {
+						theButton.SetTitleColor(UIColor.Green, UIControlState.Normal);
+					} else if (messageResult == "incorrect") {
+						theButton.SetTitleColor(UIColor.Red, UIControlState.Normal);
+					} else {
+						throw new Exception("Invalid path!");
+					}
 				}
 				else
 				{
 					StatusLabel.TextColor = UIColor.Black;
 					StatusLabel.BackgroundColor = UIColor.Orange;
-					OutputLabel.Text = "Nothing returned!";
+					StatusLabel.Text = "Nothing returned!";
 				}
-				*/
-
 			}
 			catch (Exception ex)
 			{
 				StatusLabel.Text = ex.Message;
 				StatusLabel.BackgroundColor = UIColor.Red;
+			}
+		}
 
+		private UIButton getButtonFrom(string theProposedAnswer)
+		{
+			switch (theProposedAnswer) {
+			case "1":
+				return Bone;
+			case "2":
+				return Btwo;
+			case "3":
+				return Bthree;
+			case "4":
+				return Bfour;
+			default:
+				throw new InvalidOperationException();
 			}
 		}
 	}
