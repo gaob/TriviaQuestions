@@ -164,7 +164,7 @@ namespace iOSClient
 				select q;
 
 			if (question.Count() == 0) {
-				//Go to highscore.
+				EndGameSession(PlayerID, SessionID);
 			} else {
 				var question2update = question.FirstOrDefault();
 				question2update.proposedAnswer = "!";
@@ -174,6 +174,24 @@ namespace iOSClient
 				StatusLabel.Text = "Done";
 
 				Bcover.Hidden = true;
+			}
+		}
+
+		async void EndGameSession (string playerID, string sessionID)
+		{
+			try
+			{
+				JToken payload = JObject.FromObject( new { playerid = playerID, gamesessionid = sessionID });
+
+				var resultJson = await client.ServiceClient.InvokeApiAsync("endgamesession", payload);
+
+				int i = 0;
+			}
+			catch (Exception ex)
+			{
+				// Display the exception message for the demo
+				StatusLabel.Text = ex.Message;
+				StatusLabel.BackgroundColor = UIColor.Red;
 			}
 		}
 	}
