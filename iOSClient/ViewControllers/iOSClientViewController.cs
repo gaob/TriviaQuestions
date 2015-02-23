@@ -18,6 +18,7 @@ namespace iOSClient
     {
 		List<QuestionItem> Questions = new List<QuestionItem> ();
 		private string SessionID = string.Empty;
+		private string PlayerID = string.Empty;
 
 		private MobileServiceHelper client;
 
@@ -36,7 +37,7 @@ namespace iOSClient
 
         #region View lifecycle
 
-        public override void ViewDidLoad()
+        public async override void ViewDidLoad()
         {
             base.ViewDidLoad();
 
@@ -51,11 +52,14 @@ namespace iOSClient
 				Debug.Assert (table.Count() < 2);
 
 				if (table.Count() == 1) {
-					TEmail.Text = table.First ().playerid;
+					PlayerID = table.First ().playerid;
 					SessionID = table.First ().sessionid;
-				}
 
-				SQLiteHelper.db.DeleteAll<SessionItem>();
+					TEmail.Text = PlayerID;
+
+					var resultJson = await client.ServiceClient.InvokeApiAsync ("playerprogress", HttpMethod.Get, 
+						new Dictionary<string, string>{{"playerid", PlayerID}, {"gamesessionid", SessionID}});
+				}
 			}
 			catch (Exception ex)
 			{
@@ -80,28 +84,30 @@ namespace iOSClient
 
 			try
 			{
-				foreach (QuestionItem item in Questions) {
-					temp = item.ToJToken();
-					JQuestions.Add(temp);
-				}
+				if (SessionID == string.Empty) {
+					foreach (QuestionItem item in Questions) {
+						temp = item.ToJToken();
+						JQuestions.Add(temp);
+					}
 
-				payload = JObject.FromObject( new { playerid = TEmail.Text,
-										            triviaIds = JQuestions });
+					payload = JObject.FromObject( new { playerid = TEmail.Text,
+											            triviaIds = JQuestions });
 
-				var resultJson = await client.ServiceClient.InvokeApiAsync("startgamesession", payload);
+					var resultJson = await client.ServiceClient.InvokeApiAsync("startgamesession", payload);
 
-				Debug.Assert(resultJson.Value<string>("playerid") == TEmail.Text);
-				SessionID = resultJson.Value<string>("gamesessionid");
+					Debug.Assert(resultJson.Value<string>("playerid") == TEmail.Text);
+					SessionID = resultJson.Value<string>("gamesessionid");
 
-				SQLiteHelper.db.Insert(new SessionItem(SessionID, resultJson.Value<string>("playerid")));
-				foreach (QuestionItem item in Questions) {
-					tempSQ = new SessionQuestionItem();
-					tempSQ.sessionid = SessionID;
-					tempSQ.questionid = item.id;
-					tempSQ.proposedAnswer = first_q ? "!" : "?";
-					SQLiteHelper.db.Insert(tempSQ);
+					SQLiteHelper.db.Insert(new SessionItem(SessionID, resultJson.Value<string>("playerid")));
+					foreach (QuestionItem item in Questions) {
+						tempSQ = new SessionQuestionItem();
+						tempSQ.sessionid = SessionID;
+						tempSQ.questionid = item.id;
+						tempSQ.proposedAnswer = first_q ? "!" : "?";
+						SQLiteHelper.db.Insert(tempSQ);
 
-					first_q = false;
+						first_q = false;
+					}
 				}
 
 				QuestionViewController aViewController = this.Storyboard.InstantiateViewController("QuestionViewController") as QuestionViewController;
