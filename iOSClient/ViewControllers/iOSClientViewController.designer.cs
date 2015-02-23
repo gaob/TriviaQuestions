@@ -20,6 +20,10 @@ namespace iOSClient
 
 		[Outlet]
 		[GeneratedCode ("iOS Designer", "1.0")]
+		UIButton BViewHighScore { get; set; }
+
+		[Outlet]
+		[GeneratedCode ("iOS Designer", "1.0")]
 		UIButton CallAPIGetButton { get; set; }
 
 		[Outlet]
@@ -46,11 +50,19 @@ namespace iOSClient
 		[GeneratedCode ("iOS Designer", "1.0")]
 		partial void Bstart_TouchUpInside (UIButton sender);
 
+		[Action ("BViewHighScore_TouchUpInside:")]
+		[GeneratedCode ("iOS Designer", "1.0")]
+		partial void BViewHighScore_TouchUpInside (UIButton sender);
+
 		void ReleaseDesignerOutlets ()
 		{
 			if (Bstart != null) {
 				Bstart.Dispose ();
 				Bstart = null;
+			}
+			if (BViewHighScore != null) {
+				BViewHighScore.Dispose ();
+				BViewHighScore = null;
 			}
 			if (CallAPIGetButton != null) {
 				CallAPIGetButton.Dispose ();

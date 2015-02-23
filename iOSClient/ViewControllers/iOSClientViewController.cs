@@ -119,6 +119,21 @@ namespace iOSClient
 			}
 		}
 
+		partial void BViewHighScore_TouchUpInside (UIButton sender)
+		{
+			if (TEmail.Text.Length == 0) {
+				TEmail.Text = "Please enter your Email";
+			}
+
+			HighScoresViewController.PlayerID = TEmail.Text;
+			HighScoresViewController aViewController = this.Storyboard.InstantiateViewController("HighScoresViewController") as HighScoresViewController;
+			if (aViewController != null) {
+				this.NavigationController.PushViewController(aViewController, true);
+			} else {
+				StatusLabel.Text = "Start Game Board Error!";
+			}
+		}
+
         async void CallAPIGetButton_TouchUpInside(object sender, EventArgs e)
         {
             try

@@ -78,12 +78,22 @@
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="24" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO">
-                                <rect key="frame" x="84" y="518" width="136" height="30"/>
+                                <rect key="frame" x="89" y="457" width="136" height="30"/>
                                 <state key="normal" title="Start Game">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
                                     <action selector="Bstart_TouchUpInside:" destination="vXZ-lx-hvc" id="25" eventType="touchUpInside"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="185" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO">
+                                <rect key="frame" x="83" y="506" width="145" height="30"/>
+                                <state key="normal" title="View High Scores">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="Bstart_TouchUpInside:" destination="187" id="186" eventType="touchUpInside"/>
+                                    <action selector="BViewHighScore_TouchUpInside:" destination="vXZ-lx-hvc" id="189" eventType="touchUpInside"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -96,6 +106,7 @@
                         <outlet property="LEmail" destination="22" id="name-outlet-22"/>
                         <outlet property="Bstart" destination="24" id="name-outlet-24"/>
                         <outlet property="TEmail" destination="23" id="name-outlet-23"/>
+                        <outlet property="BViewHighScore" destination="185" id="name-outlet-185"/>
                     </connections>
                     <navigationItem title="Trivia Game" id="97" key="navigationItem"/>
                 </viewController>
@@ -202,6 +213,33 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="105" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="386" y="73"/>
+        </scene>
+        <scene sceneID="166">
+            <objects>
+                <tableViewController id="167" sceneMemberID="viewController" customClass="HighScoresViewController" storyboardIdentifier="HighScoresViewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="168">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="171">
+                                <rect key="frame" x="0.0" y="22" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="171" id="172">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="167" id="169"/>
+                            <outlet property="delegate" destination="167" id="170"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="173" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="812" y="72"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
