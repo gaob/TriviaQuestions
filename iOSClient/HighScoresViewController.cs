@@ -11,7 +11,6 @@ namespace iOSClient
 {
 	partial class HighScoresViewController : UITableViewController
 	{
-		UITableView VTable = null;
 		private MobileServiceHelper client;
 		public static string PlayerID = string.Empty;
 		private List<ScoreItem> SItems = new List<ScoreItem>();
@@ -39,15 +38,14 @@ namespace iOSClient
 						throw new Exception("Unexpected type in resultJson");
 					}
 				}
-
-				VTable = new UITableView(View.Bounds); // defaults to Plain style
+					
 				string[] tableItems = new string[SItems.Count];
 
 				for (int i=0;i<tableItems.Length;i++) {
 					tableItems[i] = SItems[i].ToString();
 				}
-				VTable.Source = new TableSource(tableItems);
-				Add (VTable);
+				HighScoresTable.Source = new TableSource(tableItems);
+				HighScoresTable.ReloadData();
 			}
 			catch (Exception ex)
 			{

@@ -14,8 +14,16 @@ namespace iOSClient
 	[Register ("HighScoresViewController")]
 	partial class HighScoresViewController
 	{
+		[Outlet]
+		[GeneratedCode ("iOS Designer", "1.0")]
+		UITableView HighScoresTable { get; set; }
+
 		void ReleaseDesignerOutlets ()
 		{
+			if (HighScoresTable != null) {
+				HighScoresTable.Dispose ();
+				HighScoresTable = null;
+			}
 		}
 	}
 }

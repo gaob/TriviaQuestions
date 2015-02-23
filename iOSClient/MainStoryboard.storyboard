@@ -236,6 +236,9 @@
                             <outlet property="delegate" destination="167" id="170"/>
                         </connections>
                     </tableView>
+                    <connections>
+                        <outlet property="HighScoresTable" destination="168" id="name-outlet-168"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="173" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

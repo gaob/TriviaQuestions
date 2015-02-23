@@ -17,7 +17,7 @@ namespace iOSClient
 
 		public override string ToString ()
 		{
-			return score.ToString();
+			return score.ToString()+"\t\t\t\t\t\t\t"+occurred.ToShortDateString();
 		}
 	}
 }
