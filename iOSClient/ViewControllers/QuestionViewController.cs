@@ -185,7 +185,36 @@ namespace iOSClient
 
 				var resultJson = await client.ServiceClient.InvokeApiAsync("endgamesession", payload);
 
-				int i = 0;
+				if (resultJson.HasValues)
+				{
+					// Extract the value from the result
+					int score = resultJson.Value<int>("score");
+					int highscorebeat = resultJson.Value<int>("highscorebeat");
+
+					string highscorebeat_text = string.Empty;
+
+					if (highscorebeat != -1) {
+						if (highscorebeat == 0) {
+							highscorebeat_text = "\n New High Score!";
+						} else if (highscorebeat == 1) {
+							highscorebeat_text = "\n Congratulations you beat your highest score!";
+						} else if (highscorebeat == 2) {
+							highscorebeat_text = "\n Congratulations you beat your 2nd high score!";
+						} else if (highscorebeat == 3) {
+							highscorebeat_text = "\n Congratulations you beat your 3rd high score!";
+						} else {
+							highscorebeat_text = "\n Congratulations you beat your " + highscorebeat + "th high score!";
+						}
+					}
+
+					TQText.Text = "Total Score: " + score.ToString() + highscorebeat_text;
+				}
+				else
+				{
+					StatusLabel.TextColor = UIColor.Black;
+					StatusLabel.BackgroundColor = UIColor.Orange;
+					StatusLabel.Text = "Nothing returned!";
+				}
 			}
 			catch (Exception ex)
 			{

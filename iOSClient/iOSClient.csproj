@@ -98,6 +98,10 @@
     <Compile Include="Models\QuestionItem.cs" />
     <Compile Include="Helpers\MobileServiceHelper.cs" />
     <Compile Include="Helpers\SQLiteHelper.cs" />
+    <Compile Include="HighScoresViewController.cs" />
+    <Compile Include="HighScoresViewController.designer.cs">
+      <DependentUpon>HighScoresViewController.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="MainStoryboard.storyboard" />
