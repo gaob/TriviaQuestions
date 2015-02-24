@@ -51,6 +51,9 @@ namespace iOSClient
 
 		async Task DisplayNextQuestion ()
 		{
+			StatusLabel.Text = "Retrieve question...";
+			StatusLabel.BackgroundColor = UIColor.Orange;
+
 			var question = from q in SQLiteHelper.db.Table<SessionQuestionItem> ()
 			where (q.proposedAnswer == "!" && q.sessionid == SessionID)
 			select q;
@@ -62,9 +65,16 @@ namespace iOSClient
 			currQuestion = new QuestionItem (resultJson as JObject);
 			TQText.Text = currQuestion.questionText;
 			Bone.SetTitle (currQuestion.answerOne, UIControlState.Normal);
+			Bone.SetTitleColor(UIColor.Blue, UIControlState.Normal);
 			Btwo.SetTitle (currQuestion.answerTwo, UIControlState.Normal);
+			Btwo.SetTitleColor(UIColor.Blue, UIControlState.Normal);
 			Bthree.SetTitle (currQuestion.answerThree, UIControlState.Normal);
+			Bthree.SetTitleColor(UIColor.Blue, UIControlState.Normal);
 			Bfour.SetTitle (currQuestion.answerFour, UIControlState.Normal);
+			Bfour.SetTitleColor(UIColor.Blue, UIControlState.Normal);
+
+			StatusLabel.Text = "Please select your answer";
+			StatusLabel.BackgroundColor = UIColor.Blue;
 		}
 
 		partial void Bone_TouchUpInside (UIButton sender)
@@ -92,7 +102,6 @@ namespace iOSClient
 			try
 			{
 				StatusLabel.Text = "Checking Answer...";
-				StatusLabel.TextColor = UIColor.White;
 				StatusLabel.BackgroundColor = UIColor.Blue;
 
 				//Update internal proposedAnswer field.
@@ -126,6 +135,7 @@ namespace iOSClient
 					}
 
 					StatusLabel.Text = "Click anywhere to the next question";
+					StatusLabel.BackgroundColor = UIColor.Green;
 					Bcover.Hidden = false;
 				}
 				else
@@ -172,9 +182,7 @@ namespace iOSClient
 				var question2update = question.FirstOrDefault();
 				question2update.proposedAnswer = "!";
 				SQLiteHelper.db.Update(question2update);
-				StatusLabel.Text = "Displaying Next Question";
 				await DisplayNextQuestion();
-				StatusLabel.Text = "Done";
 
 				Bcover.Hidden = true;
 			}
@@ -217,6 +225,9 @@ namespace iOSClient
 					iOSClientViewController.ResetSession();
 
 					Finished = true;
+
+					StatusLabel.Text = "Click anywhere to go back";
+					StatusLabel.BackgroundColor = UIColor.Green;
 				}
 				else
 				{
