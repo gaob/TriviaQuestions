@@ -19,6 +19,7 @@ namespace iOSClient
 		List<QuestionItem> Questions = new List<QuestionItem> ();
 		private string SessionID = string.Empty;
 		private string PlayerID = string.Empty;
+		private int triviaQCount = 10;
 
 		private MobileServiceHelper client;
 
@@ -59,6 +60,10 @@ namespace iOSClient
 
 					var resultJson = await client.ServiceClient.InvokeApiAsync ("playerprogress", HttpMethod.Get, 
 						new Dictionary<string, string>{{"playerid", PlayerID}, {"gamesessionid", SessionID}});
+
+					//Check if need to use resultJson
+				} else {
+					TtriviaQCount.Text = triviaQCount.ToString();
 				}
 			}
 			catch (Exception ex)
@@ -84,6 +89,29 @@ namespace iOSClient
 
 			try
 			{
+				var resultQuestions = await client.ServiceClient.InvokeApiAsync ("triviaquestions/" + triviaQCount.ToString(), HttpMethod.Get, null);
+				// Verfiy that a result was returned
+				if (resultQuestions.HasValues)
+				{
+					Debug.Assert(Questions.Count == 0);
+
+					foreach (var item in resultQuestions)
+					{
+						if (item is JObject) {
+							Questions.Add(new QuestionItem(item as JObject));
+						} else {
+							throw new Exception("Unexpected type in resultQuestions");
+						}
+					}
+
+					// Set the text block with the result
+					OutputLabel.Text = Questions.Count.ToString();
+				}
+				else
+				{
+					throw new Exception("Nothing returned!");
+				}
+
 				if (SessionID == string.Empty) {
 					foreach (QuestionItem item in Questions) {
 						temp = item.ToJToken();
@@ -108,6 +136,8 @@ namespace iOSClient
 
 						first_q = false;
 					}
+				} else {
+					throw new NotImplementedException();
 				}
 
 				QuestionViewController aViewController = this.Storyboard.InstantiateViewController("QuestionViewController") as QuestionViewController;

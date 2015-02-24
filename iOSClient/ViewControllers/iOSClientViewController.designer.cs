@@ -36,6 +36,10 @@ namespace iOSClient
 
 		[Outlet]
 		[GeneratedCode ("iOS Designer", "1.0")]
+		UILabel LtriviaQCount { get; set; }
+
+		[Outlet]
+		[GeneratedCode ("iOS Designer", "1.0")]
 		UILabel OutputLabel { get; set; }
 
 		[Outlet]
@@ -45,6 +49,10 @@ namespace iOSClient
 		[Outlet]
 		[GeneratedCode ("iOS Designer", "1.0")]
 		UITextField TEmail { get; set; }
+
+		[Outlet]
+		[GeneratedCode ("iOS Designer", "1.0")]
+		UITextField TtriviaQCount { get; set; }
 
 		[Action ("Bstart_TouchUpInside:")]
 		[GeneratedCode ("iOS Designer", "1.0")]
@@ -76,6 +84,10 @@ namespace iOSClient
 				LEmail.Dispose ();
 				LEmail = null;
 			}
+			if (LtriviaQCount != null) {
+				LtriviaQCount.Dispose ();
+				LtriviaQCount = null;
+			}
 			if (OutputLabel != null) {
 				OutputLabel.Dispose ();
 				OutputLabel = null;
@@ -87,6 +99,10 @@ namespace iOSClient
 			if (TEmail != null) {
 				TEmail.Dispose ();
 				TEmail = null;
+			}
+			if (TtriviaQCount != null) {
+				TtriviaQCount.Dispose ();
+				TtriviaQCount = null;
 			}
 		}
 	}
