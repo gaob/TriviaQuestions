@@ -103,6 +103,8 @@ namespace iOSClient
 					throw new Exception("Invalid triviaQCount!");
 				}
 
+				Questions = new List<QuestionItem>();
+
 				var resultQuestions = await client.ServiceClient.InvokeApiAsync ("triviaquestions/" + triviaQCount.ToString(), HttpMethod.Get, null);
 				// Verfiy that a result was returned
 				if (resultQuestions.HasValues)

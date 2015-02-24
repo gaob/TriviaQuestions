@@ -68,7 +68,7 @@ namespace iOSClient
 					select q;
 
 				if (question.Count() == 0) {
-					EndGameSession(PlayerID, SessionID);
+					await EndGameSession(PlayerID, SessionID);
 				} else {
 					var question2update = question.FirstOrDefault();
 					question2update.proposedAnswer = "!";
@@ -210,7 +210,7 @@ namespace iOSClient
 			if (Finished) {
 				this.NavigationController.PopToRootViewController(true);
 			} else if (question.Count() == 0) {
-				EndGameSession(PlayerID, SessionID);
+				await EndGameSession(PlayerID, SessionID);
 			} else {
 				var question2update = question.FirstOrDefault();
 				question2update.proposedAnswer = "!";
@@ -222,11 +222,20 @@ namespace iOSClient
 
 			timer.Enabled = false;
 		}
+
+		async partial void BQuit_TouchUpInside (UIButton sender)
+		{
+			await EndGameSession(PlayerID, SessionID);
+			this.NavigationController.PopToRootViewController(false);
+		}
 		
-		async void EndGameSession (string playerID, string sessionID)
+		async Task EndGameSession (string playerID, string sessionID)
 		{
 			try
 			{
+				StatusLabel.Text = "Ending Game...";
+				StatusLabel.BackgroundColor = UIColor.Orange;
+
 				JToken payload = JObject.FromObject( new { playerid = playerID, gamesessionid = sessionID });
 
 				var resultJson = await client.ServiceClient.InvokeApiAsync("endgamesession", payload);
