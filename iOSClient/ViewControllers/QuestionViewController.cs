@@ -17,6 +17,7 @@ namespace iOSClient
 		private string SessionID = string.Empty;
 		private string QuestionID = string.Empty;
 		private QuestionItem currQuestion = null;
+		private bool Finished = false;
 
 		public QuestionViewController (IntPtr handle) : base (handle)
 		{
@@ -163,7 +164,9 @@ namespace iOSClient
 					where (q.proposedAnswer == "?" && q.sessionid == SessionID)
 				select q;
 
-			if (question.Count() == 0) {
+			if (Finished) {
+				this.NavigationController.PopToRootViewController(true);
+			} else if (question.Count() == 0) {
 				EndGameSession(PlayerID, SessionID);
 			} else {
 				var question2update = question.FirstOrDefault();
@@ -176,7 +179,7 @@ namespace iOSClient
 				Bcover.Hidden = true;
 			}
 		}
-
+		
 		async void EndGameSession (string playerID, string sessionID)
 		{
 			try
@@ -208,6 +211,11 @@ namespace iOSClient
 					}
 
 					TQText.Text = "Total Score: " + score.ToString() + highscorebeat_text;
+
+					SQLiteHelper.db.DropTable<SessionItem>();
+					SQLiteHelper.db.DropTable<SessionQuestionItem>();
+
+					Finished = true;
 				}
 				else
 				{
