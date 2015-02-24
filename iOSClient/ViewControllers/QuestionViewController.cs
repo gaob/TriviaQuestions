@@ -214,6 +214,7 @@ namespace iOSClient
 
 					SQLiteHelper.db.DropTable<SessionItem>();
 					SQLiteHelper.db.DropTable<SessionQuestionItem>();
+					iOSClientViewController.ResetSession();
 
 					Finished = true;
 				}

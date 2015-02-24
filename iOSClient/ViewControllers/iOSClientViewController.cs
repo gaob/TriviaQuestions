@@ -17,8 +17,8 @@ namespace iOSClient
     public partial class iOSClientViewController : UIViewController
     {
 		List<QuestionItem> Questions = new List<QuestionItem> ();
-		private string SessionID = string.Empty;
-		private string PlayerID = string.Empty;
+		private static string SessionID = string.Empty;
+		private static string PlayerID = string.Empty;
 		private int triviaQCount = 10;
 
 		private MobileServiceHelper client;
@@ -76,6 +76,14 @@ namespace iOSClient
 			CallAPIGetButton.TouchUpInside += CallAPIGetButton_TouchUpInside;
 			CallAPIPostButton.TouchUpInside += CallAPIPostButton_TouchUpInside;
         }
+
+		public static void ResetSession()
+		{
+			SessionID = string.Empty;
+			PlayerID = string.Empty;
+
+			SQLiteHelper.Initialize ();
+		}
 
 		async partial void Bstart_TouchUpInside (UIButton sender)
 		{
@@ -150,7 +158,7 @@ namespace iOSClient
 				if (aViewController != null) {
 					this.NavigationController.PushViewController(aViewController, true);
 				} else {
-					StatusLabel.Text = "Start Game Board Error!";
+					StatusLabel.Text = "Start Game Error!";
 				}
 			}
 			catch (Exception ex)
@@ -165,6 +173,7 @@ namespace iOSClient
 		{
 			if (TEmail.Text.Length == 0) {
 				TEmail.Text = "Please enter your Email";
+				return;
 			}
 
 			HighScoresViewController.PlayerID = TEmail.Text;
@@ -172,7 +181,7 @@ namespace iOSClient
 			if (aViewController != null) {
 				this.NavigationController.PushViewController(aViewController, true);
 			} else {
-				StatusLabel.Text = "Start Game Board Error!";
+				StatusLabel.Text = "High Score Board Error!";
 			}
 		}
 
