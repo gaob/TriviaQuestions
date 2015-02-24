@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace iOSClient
 {
@@ -18,6 +19,7 @@ namespace iOSClient
 		private string QuestionID = string.Empty;
 		private QuestionItem currQuestion = null;
 		private bool Finished = false;
+		private Timer timer;
 
 		public QuestionViewController (IntPtr handle) : base (handle)
 		{
@@ -31,6 +33,10 @@ namespace iOSClient
 			{
 				// Perform any additional setup after loading the view, typically from a nib.
 				client = MobileServiceHelper.DefaultService;
+
+				timer = new Timer();
+				timer.Interval = 2000;
+				timer.Elapsed += OnTimedEvent;
 
 				//Check if session exists.
 				var table = SQLiteHelper.db.Table<SessionItem> ();
@@ -47,6 +53,31 @@ namespace iOSClient
 				StatusLabel.Text = ex.Message;
 				StatusLabel.BackgroundColor = UIColor.Red;
 			}
+		}
+
+		private void OnTimedEvent(object sender, System.Timers.ElapsedEventArgs e)
+		{
+			timer.Stop ();
+
+			//Update visual representation here
+			InvokeOnMainThread(async () => {
+				StatusLabel.Text = "Timer triggered";
+
+				var question = from q in SQLiteHelper.db.Table<SessionQuestionItem>()
+						where (q.proposedAnswer == "?" && q.sessionid == SessionID)
+					select q;
+
+				if (question.Count() == 0) {
+					EndGameSession(PlayerID, SessionID);
+				} else {
+					var question2update = question.FirstOrDefault();
+					question2update.proposedAnswer = "!";
+					SQLiteHelper.db.Update(question2update);
+					await DisplayNextQuestion();
+
+					Bcover.Hidden = true;
+				}
+			});
 		}
 
 		async Task DisplayNextQuestion ()
@@ -137,6 +168,8 @@ namespace iOSClient
 					StatusLabel.Text = "Click anywhere to the next question";
 					StatusLabel.BackgroundColor = UIColor.Green;
 					Bcover.Hidden = false;
+
+					timer.Enabled = true;
 				}
 				else
 				{
@@ -186,6 +219,8 @@ namespace iOSClient
 
 				Bcover.Hidden = true;
 			}
+
+			timer.Enabled = false;
 		}
 		
 		async void EndGameSession (string playerID, string sessionID)
