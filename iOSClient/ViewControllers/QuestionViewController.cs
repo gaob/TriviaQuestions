@@ -29,6 +29,7 @@ namespace iOSClient
 		{
 			base.ViewDidLoad();
 
+			// Hides back button, quit game is handled by the quit game button.
 			this.NavigationItem.SetHidesBackButton (true, false);
 
 			try
@@ -36,6 +37,7 @@ namespace iOSClient
 				// Perform any additional setup after loading the view, typically from a nib.
 				client = MobileServiceHelper.DefaultService;
 
+				// Prepare the timer for displaying the next question.
 				timer = new Timer();
 				timer.Interval = 2000;
 				timer.Elapsed += OnTimedEvent;
@@ -55,10 +57,16 @@ namespace iOSClient
 				UpdateStatus (ex.Message, UIColor.White, UIColor.Red);
 			}
 
+			// Display the quit game button.
 			BQuit.Hidden = false;
 			BQuit.SetTitleColor(UIColor.Blue, UIControlState.Normal);
 		}
 
+		/// <summary>
+		/// Timer triggerred action.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
 		private void OnTimedEvent(object sender, System.Timers.ElapsedEventArgs e)
 		{
 			timer.Stop ();
@@ -67,13 +75,17 @@ namespace iOSClient
 			InvokeOnMainThread(async () => {
 				StatusLabel.Text = "Timer triggered";
 
+				// Get unanswered questions.
 				var question = from q in SQLiteHelper.db.Table<SessionQuestionItem>()
 						where (q.proposedAnswer == "?" && q.sessionid == SessionID)
 					select q;
 
+				// No unanswered questions, end game.
 				if (question.Count() == 0) {
 					await EndGameSession(PlayerID, SessionID);
-				} else {
+				}
+				// Otherwise, display the next question.
+				else {
 					var question2update = question.FirstOrDefault();
 					question2update.proposedAnswer = "!";
 					SQLiteHelper.db.Update(question2update);
@@ -84,17 +96,22 @@ namespace iOSClient
 			});
 		}
 
+		/// <summary>
+		/// Displaies the next question.
+		/// </summary>
+		/// <returns>The next question.</returns>
 		async Task DisplayNextQuestion ()
 		{
 			UpdateStatus ("Retrieve question...", UIColor.White, UIColor.Orange);
 
+			// Get the question set to be displayed.
 			var question = from q in SQLiteHelper.db.Table<SessionQuestionItem> ()
 			where (q.proposedAnswer == "!" && q.sessionid == SessionID)
 			select q;
 			Debug.Assert (question.Count () == 1);
 			QuestionID = question.First ().questionid;
 
-			// Make the call to the hello resource asynchronously 
+			// Make the call to get the question details. 
 			var resultJson = await client.ServiceClient.InvokeApiAsync ("triviaquestions/" + QuestionID, HttpMethod.Get, null);
 			currQuestion = new QuestionItem (resultJson as JObject);
 			TQText.Text = currQuestion.questionText;
@@ -110,26 +127,46 @@ namespace iOSClient
 			UpdateStatus ("Please select your answer", UIColor.White, UIColor.Blue);
 		}
 
+		/// <summary>
+		/// Answer 1 action.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
 		partial void Bone_TouchUpInside (UIButton sender)
 		{
 			ProposeAnswer("1");
 		}
 
+		/// <summary>
+		/// Answer 2 action.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
 		partial void Btwo_TouchUpInside (UIButton sender)
 		{
 			ProposeAnswer("2");
 		}
 
+		/// <summary>
+		/// Answer 3 action.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
 		partial void Bthree_TouchUpInside (UIButton sender)
 		{
 			ProposeAnswer("3");
 		}
 
+		/// <summary>
+		/// Answer 4 action.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
 		partial void Bfour_TouchUpInside (UIButton sender)
 		{
 			ProposeAnswer("4");
 		}
 
+		/// <summary>
+		/// Proposes the answer.
+		/// </summary>
+		/// <param name="theProposedAnswer">The proposed answer.</param>
 		async void ProposeAnswer (string theProposedAnswer)
 		{
 			try
@@ -148,7 +185,7 @@ namespace iOSClient
 				// Create the json to send using an anonymous type 
 				JToken payload = JObject.FromObject(new { playerid = PlayerID,
 														  gamesessionid = SessionID, id = QuestionID, proposedAnswer = theProposedAnswer});
-				// Make the call to the hello resource asynchronously using POST verb
+				// Make the call to get the correctness.
 				var resultJson = await client.ServiceClient.InvokeApiAsync("playerprogress", payload, new HttpMethod("PATCH"), null);
 
 				if (resultJson.HasValues)
@@ -158,6 +195,7 @@ namespace iOSClient
 
 					UIButton theButton = getButtonFrom(theProposedAnswer);
 
+					// Green means correct selection, Red means incorrect selection.
 					if (messageResult == "correct") {
 						theButton.SetTitleColor(UIColor.Green, UIControlState.Normal);
 					} else if (messageResult == "incorrect") {
@@ -169,6 +207,7 @@ namespace iOSClient
 					UpdateStatus("Click anywhere to the next question", UIColor.Blue, UIColor.Green);
 					Bcover.Hidden = false;
 
+					// Start the 2 second countdown to display the next question.
 					timer.Enabled = true;
 				}
 				else
@@ -183,6 +222,11 @@ namespace iOSClient
 			}
 		}
 
+		/// <summary>
+		/// Convert the proposed answer string to button name.
+		/// </summary>
+		/// <returns>The button from.</returns>
+		/// <param name="theProposedAnswer">The proposed answer.</param>
 		private UIButton getButtonFrom(string theProposedAnswer)
 		{
 			switch (theProposedAnswer) {
@@ -199,17 +243,27 @@ namespace iOSClient
 			}
 		}
 
+		/// <summary>
+		/// Bcover action, used to advance from the current question.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
 		async partial void Bcover_TouchUpInside (UIButton sender)
 		{
+			// get unanswered questions.
 			var question = from q in SQLiteHelper.db.Table<SessionQuestionItem>()
 					where (q.proposedAnswer == "?" && q.sessionid == SessionID)
 				select q;
 
+			// If score displayed, go back.
 			if (Finished) {
 				this.NavigationController.PopToRootViewController(true);
-			} else if (question.Count() == 0) {
+			}
+			// No unanswered questions, end game.
+			else if (question.Count() == 0) {
 				await EndGameSession(PlayerID, SessionID);
-			} else {
+			}
+			// Otherwisse, display the next question.
+			else {
 				var question2update = question.FirstOrDefault();
 				question2update.proposedAnswer = "!";
 				SQLiteHelper.db.Update(question2update);
@@ -218,15 +272,26 @@ namespace iOSClient
 				Bcover.Hidden = true;
 			}
 
+			// If player click to advance to the next question, disable the timer.
 			timer.Enabled = false;
 		}
 
+		/// <summary>
+		/// Quit Game button action.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
 		async partial void BQuit_TouchUpInside (UIButton sender)
 		{
 			await EndGameSession(PlayerID, SessionID);
 			this.NavigationController.PopToRootViewController(false);
 		}
-		
+
+		/// <summary>
+		/// Ends the game session.
+		/// </summary>
+		/// <returns>The game session.</returns>
+		/// <param name="playerID">Player I.</param>
+		/// <param name="sessionID">Session I.</param>
 		async Task EndGameSession (string playerID, string sessionID)
 		{
 			try
@@ -235,6 +300,7 @@ namespace iOSClient
 
 				JToken payload = JObject.FromObject( new { playerid = playerID, gamesessionid = sessionID });
 
+				// Call endgamesession.
 				var resultJson = await client.ServiceClient.InvokeApiAsync("endgamesession", payload);
 
 				if (resultJson.HasValues)
@@ -248,6 +314,7 @@ namespace iOSClient
 
 						string highscorebeat_text = string.Empty;
 
+						// Construct message based on highscorebeat.
 						if (highscorebeat != -1) {
 							if (highscorebeat == 0) {
 								highscorebeat_text = "\nNew High Score!";
@@ -265,10 +332,12 @@ namespace iOSClient
 						TQText.Text = "Total Score: " + score.ToString() + highscorebeat_text;
 					}
 
+					// Clear the session data.
 					SQLiteHelper.db.DropTable<SessionItem>();
 					SQLiteHelper.db.DropTable<SessionQuestionItem>();
 					iOSClientViewController.ResetSession();
 
+					// Marked as finished.
 					Finished = true;
 
 					Bone.SetTitle (string.Empty, UIControlState.Normal);
@@ -291,6 +360,12 @@ namespace iOSClient
 			}
 		}
 
+		/// <summary>
+		/// Updates the status.
+		/// </summary>
+		/// <param name="text">Text.</param>
+		/// <param name="tColor">T color.</param>
+		/// <param name="bColor">B color.</param>
 		void UpdateStatus (string text, UIColor tColor, UIColor bColor)
 		{
 			StatusLabel.Text = text;
