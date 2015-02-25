@@ -3,6 +3,9 @@ using SQLite;
 
 namespace iOSClient
 {
+	/// <summary>
+	/// Session question item in the local store.
+	/// </summary>
 	[Table("SessionQuestionItem")]
 	public class SessionQuestionItem
 	{

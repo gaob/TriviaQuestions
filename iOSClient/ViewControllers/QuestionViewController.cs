@@ -55,6 +55,7 @@ namespace iOSClient
 				UpdateStatus (ex.Message, UIColor.White, UIColor.Red);
 			}
 
+			BQuit.Hidden = false;
 			BQuit.SetTitleColor(UIColor.Blue, UIControlState.Normal);
 		}
 
@@ -274,6 +275,8 @@ namespace iOSClient
 					Btwo.SetTitle (string.Empty, UIControlState.Normal);
 					Bthree.SetTitle (string.Empty, UIControlState.Normal);
 					Bfour.SetTitle (string.Empty, UIControlState.Normal);
+					BQuit.Hidden = true;
+					Bcover.Hidden = false;
 					UpdateStatus("Click anywhere to go back", UIColor.Blue, UIColor.Green);
 				}
 				else

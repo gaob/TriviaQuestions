@@ -2,10 +2,11 @@
 
 namespace iOSClient
 {
-
+	/// <summary>
+	/// Encapsulate the mobile service into a helper class.
+	/// </summary>
     public class MobileServiceHelper
     {
-
         private static MobileServiceHelper _instance;
 
 		const string applicationURL = @"https://dotnet2.azure-mobile.net/";
@@ -14,14 +15,12 @@ namespace iOSClient
         private readonly MobileServiceClient _client;
 
         private MobileServiceHelper()
-        {
-            CurrentPlatform.Init();
-            //SQLitePCL.CurrentPlatform.Init();
+		{
+			CurrentPlatform.Init ();
 
-            // Initialize the Mobile Service client with your URL and key
-            _client = new MobileServiceClient(applicationURL, applicationKey);
-
-        }
+			// Initialize the Mobile Service client with your URL and key
+			_client = new MobileServiceClient (applicationURL, applicationKey);
+		}
 
         private static volatile object _syncRoot = new object();
 

@@ -3,6 +3,9 @@ using Newtonsoft.Json.Linq;
 
 namespace iOSClient
 {
+	/// <summary>
+	/// Client structure to store a question.
+	/// </summary>
 	public class QuestionItem
 	{
 		public string id { get; set;}
@@ -13,6 +16,10 @@ namespace iOSClient
 		public string answerThree { get; set; }
 		public string answerFour { get; set; }
 
+		/// <summary>
+		/// Constructor from a JObject.
+		/// </summary>
+		/// <param name="theObject">The object.</param>
 		public QuestionItem(JObject theObject)
 		{
 			id = theObject.Value<string> ("id");
@@ -23,6 +30,10 @@ namespace iOSClient
 			answerFour = theObject.Value<string> ("answerFour");
 		}
 
+		/// <summary>
+		/// Return a simple JToken
+		/// </summary>
+		/// <returns>The J token.</returns>
 		public JToken ToJToken()
 		{
 			return JObject.FromObject (new { id = id});
