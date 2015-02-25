@@ -158,9 +158,8 @@ namespace iOSClient
 			}
 			catch (Exception ex)
 			{
-				// Display the exception message for the demo
-				StatusLabel.Text = ex.Message;
-				StatusLabel.BackgroundColor = UIColor.Red;
+				// Display the exception message
+				UpdateStatus (ex.Message, UIColor.White, UIColor.Red);
 			}
 		}
 

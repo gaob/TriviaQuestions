@@ -49,10 +49,11 @@ namespace iOSClient
 			}
 			catch (Exception ex)
 			{
-				// Display the exception message for the demo
-				StatusLabel.Text = ex.Message;
-				StatusLabel.BackgroundColor = UIColor.Red;
+				// Display the exception message
+				UpdateStatus (ex.Message, UIColor.White, UIColor.Red);
 			}
+
+			BQuit.SetTitleColor(UIColor.Blue, UIControlState.Normal);
 		}
 
 		private void OnTimedEvent(object sender, System.Timers.ElapsedEventArgs e)
@@ -82,8 +83,7 @@ namespace iOSClient
 
 		async Task DisplayNextQuestion ()
 		{
-			StatusLabel.Text = "Retrieve question...";
-			StatusLabel.BackgroundColor = UIColor.Orange;
+			UpdateStatus ("Retrieve question...", UIColor.White, UIColor.Orange);
 
 			var question = from q in SQLiteHelper.db.Table<SessionQuestionItem> ()
 			where (q.proposedAnswer == "!" && q.sessionid == SessionID)
@@ -104,8 +104,7 @@ namespace iOSClient
 			Bfour.SetTitle (currQuestion.answerFour, UIControlState.Normal);
 			Bfour.SetTitleColor(UIColor.Blue, UIControlState.Normal);
 
-			StatusLabel.Text = "Please select your answer";
-			StatusLabel.BackgroundColor = UIColor.Blue;
+			UpdateStatus ("Please select your answer", UIColor.White, UIColor.Blue);
 		}
 
 		partial void Bone_TouchUpInside (UIButton sender)
@@ -132,8 +131,7 @@ namespace iOSClient
 		{
 			try
 			{
-				StatusLabel.Text = "Checking Answer...";
-				StatusLabel.BackgroundColor = UIColor.Blue;
+				UpdateStatus("Checking Answer...", UIColor.White, UIColor.Blue);
 
 				//Update internal proposedAnswer field.
 				var question = from q in SQLiteHelper.db.Table<SessionQuestionItem>()
@@ -165,23 +163,20 @@ namespace iOSClient
 						throw new Exception("Invalid path!");
 					}
 
-					StatusLabel.Text = "Click anywhere to the next question";
-					StatusLabel.BackgroundColor = UIColor.Green;
+					UpdateStatus("Click anywhere to the next question", UIColor.Blue, UIColor.Green);
 					Bcover.Hidden = false;
 
 					timer.Enabled = true;
 				}
 				else
 				{
-					StatusLabel.TextColor = UIColor.Black;
-					StatusLabel.BackgroundColor = UIColor.Orange;
-					StatusLabel.Text = "Nothing returned!";
+					UpdateStatus("Nothing returned!", UIColor.Black, UIColor.Orange);
 				}
 			}
 			catch (Exception ex)
 			{
-				StatusLabel.Text = ex.Message;
-				StatusLabel.BackgroundColor = UIColor.Red;
+				// Display the exception message
+				UpdateStatus (ex.Message, UIColor.White, UIColor.Red);
 			}
 		}
 
@@ -233,8 +228,7 @@ namespace iOSClient
 		{
 			try
 			{
-				StatusLabel.Text = "Ending Game...";
-				StatusLabel.BackgroundColor = UIColor.Orange;
+				UpdateStatus("Ending Game...", UIColor.White, UIColor.Orange);
 
 				JToken payload = JObject.FromObject( new { playerid = playerID, gamesessionid = sessionID });
 
@@ -274,22 +268,25 @@ namespace iOSClient
 
 					Finished = true;
 
-					StatusLabel.Text = "Click anywhere to go back";
-					StatusLabel.BackgroundColor = UIColor.Green;
+					UpdateStatus("Click anywhere to go back", UIColor.Blue, UIColor.Green);
 				}
 				else
 				{
-					StatusLabel.TextColor = UIColor.Black;
-					StatusLabel.BackgroundColor = UIColor.Orange;
-					StatusLabel.Text = "Nothing returned!";
+					UpdateStatus("Nothing returned!", UIColor.Black, UIColor.Orange);
 				}
 			}
 			catch (Exception ex)
 			{
-				// Display the exception message for the demo
-				StatusLabel.Text = ex.Message;
-				StatusLabel.BackgroundColor = UIColor.Red;
+				// Display the exception message
+				UpdateStatus (ex.Message, UIColor.White, UIColor.Red);
 			}
+		}
+
+		void UpdateStatus (string text, UIColor tColor, UIColor bColor)
+		{
+			StatusLabel.Text = text;
+			StatusLabel.TextColor = tColor;
+			StatusLabel.BackgroundColor = bColor;
 		}
 	}
 }
