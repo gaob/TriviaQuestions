@@ -140,7 +140,8 @@ namespace iOSClient
 
 				Questions = new List<QuestionItem>();
 
-				var resultQuestions = await client.ServiceClient.InvokeApiAsync ("triviaquestions/" + triviaQCount.ToString(), HttpMethod.Get, null);
+				var resultQuestions = await client.ServiceClient.InvokeApiAsync ("triviaquestions", HttpMethod.Get, 
+					new Dictionary<string, string>{{"triviaQCount", triviaQCount.ToString()}});
 				// Verfiy that a result was returned
 				if (resultQuestions.HasValues)
 				{
