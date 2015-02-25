@@ -19,6 +19,7 @@ namespace iOSClient
 		List<QuestionItem> Questions = new List<QuestionItem> ();
 		private static string SessionID = string.Empty;
 		private static string PlayerID = string.Empty;
+		// The default triviaQCount is 10.
 		private int triviaQCount = 10;
 
 		private MobileServiceHelper client;
@@ -52,14 +53,17 @@ namespace iOSClient
 				var table = SQLiteHelper.db.Table<SessionItem> ();
 				Debug.Assert (table.Count() < 2);
 
+				// If session exists, resuming the game.
 				if (table.Count() == 1) {
 					UpdateStatus("Resuming the previous game...", UIColor.White, UIColor.Orange);
 
+					// Obtain the playerid and session id.
 					PlayerID = table.First ().playerid;
 					SessionID = table.First ().sessionid;
 
 					TEmail.Text = PlayerID;
 
+					// Get all questions from local store.
 					var question = from q in SQLiteHelper.db.Table<SessionQuestionItem> ()
 							where (q.sessionid == SessionID)
 						select q;
@@ -68,10 +72,11 @@ namespace iOSClient
 
 					TtriviaQCount.Text = question.Count().ToString();
 
+					// Call playerprogress.
 					var resultJson = await client.ServiceClient.InvokeApiAsync ("playerprogress", HttpMethod.Get, 
 						new Dictionary<string, string>{{"playerid", PlayerID}, {"gamesessionid", SessionID}});
 
-					//Check consistency.
+					//Check consistency between local store and the mobile service.
 					string temp_id = string.Empty;
 					string temp_ans = string.Empty;
 					SessionQuestionItem SQItem = null;
@@ -82,11 +87,14 @@ namespace iOSClient
 							temp_id = item.Value<string> ("id");
 							temp_ans = item.Value<string> ("proposedAnswer");
 							SQItem = question.Where(x => x.questionid == temp_id).FirstOrDefault();
+							// unanswered proposedAnswer in the server is "?", in local store, it could be "?" or "!".
 							if (temp_ans == "?") {
 								if (SQItem.proposedAnswer != "?" && SQItem.proposedAnswer != "!") {
 									throw new Exception("Inconsistency!");
 								}
-							} else if (SQItem.proposedAnswer != temp_ans) {
+							}
+							// check if answered proposedAnswer is consistent.
+							else if (SQItem.proposedAnswer != temp_ans) {
 								throw new Exception("Inconsistency!");
 							}
 						} else {
@@ -94,6 +102,7 @@ namespace iOSClient
 						}
 					}
 
+					// Start the game.
 					QuestionViewController aViewController = this.Storyboard.InstantiateViewController("QuestionViewController") as QuestionViewController;
 					if (aViewController != null) {
 						UpdateStatus(string.Empty, UIColor.White, UIColor.White);
@@ -101,7 +110,9 @@ namespace iOSClient
 					} else {
 						StatusLabel.Text = "Start Game Error!";
 					}
-				} else {
+				}
+				// If session doesn't exist, just set the default triviaQCount.
+				else {
 					TtriviaQCount.Text = triviaQCount.ToString();
 				}
 			}
@@ -112,6 +123,9 @@ namespace iOSClient
 			}
         }
 
+		/// <summary>
+		/// Resets the session.
+		/// </summary>
 		public static void ResetSession()
 		{
 			SessionID = string.Empty;
@@ -120,6 +134,10 @@ namespace iOSClient
 			SQLiteHelper.Initialize ();
 		}
 
+		/// <summary>
+		/// Start Game button action.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
 		async partial void Bstart_TouchUpInside (UIButton sender)
 		{
 			// Create the json to send using an anonymous type 
@@ -138,15 +156,25 @@ namespace iOSClient
 					throw new Exception("Invalid triviaQCount!");
 				}
 
+				if (TEmail.Text.Length == 0) {
+					throw new Exception("Invalid Email!");
+				}
+
+				// If email format is invalid, it will display an error.
+				new System.Net.Mail.MailAddress(TEmail.Text);
+
 				Questions = new List<QuestionItem>();
 
+				// Retrieve triviaQCount questions.
 				var resultQuestions = await client.ServiceClient.InvokeApiAsync ("triviaquestions", HttpMethod.Get, 
 					new Dictionary<string, string>{{"triviaQCount", triviaQCount.ToString()}});
+
 				// Verfiy that a result was returned
 				if (resultQuestions.HasValues)
 				{
 					Debug.Assert(Questions.Count == 0);
 
+					// Construct the questions from JArray.
 					foreach (var item in resultQuestions)
 					{
 						if (item is JObject) {
@@ -161,7 +189,9 @@ namespace iOSClient
 					throw new Exception("Nothing returned!");
 				}
 
+				// If we allow to start a game, which means we don't have a session currently.
 				if (SessionID == string.Empty) {
+					// Construct JArray from retrieve questions.
 					foreach (QuestionItem item in Questions) {
 						temp = item.ToJToken();
 						JQuestions.Add(temp);
@@ -170,12 +200,15 @@ namespace iOSClient
 					payload = JObject.FromObject( new { playerid = TEmail.Text,
 											            triviaIds = JQuestions });
 
+					// Call start game session.
 					var resultJson = await client.ServiceClient.InvokeApiAsync("startgamesession", payload);
 
 					Debug.Assert(resultJson.Value<string>("playerid") == TEmail.Text);
 					SessionID = resultJson.Value<string>("gamesessionid");
 
+					// Insert player session into local store.
 					SQLiteHelper.db.Insert(new SessionItem(SessionID, resultJson.Value<string>("playerid")));
+					// Insert session questions into local store, and set the first question as "!" to be displayed.
 					foreach (QuestionItem item in Questions) {
 						tempSQ = new SessionQuestionItem();
 						tempSQ.sessionid = SessionID;
@@ -186,9 +219,10 @@ namespace iOSClient
 						first_q = false;
 					}
 				} else {
-					throw new NotImplementedException();
+					throw new Exception("Invalid code path");
 				}
 
+				// Start the game.
 				QuestionViewController aViewController = this.Storyboard.InstantiateViewController("QuestionViewController") as QuestionViewController;
 				if (aViewController != null) {
 					this.NavigationController.PushViewController(aViewController, true);
@@ -203,6 +237,10 @@ namespace iOSClient
 			}
 		}
 
+		/// <summary>
+		/// High score button action.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
 		partial void BViewHighScore_TouchUpInside (UIButton sender)
 		{
 			if (TEmail.Text.Length == 0) {
@@ -211,6 +249,8 @@ namespace iOSClient
 			}
 
 			HighScoresViewController.PlayerID = TEmail.Text;
+
+			// Display the high scores.
 			HighScoresViewController aViewController = this.Storyboard.InstantiateViewController("HighScoresViewController") as HighScoresViewController;
 			if (aViewController != null) {
 				this.NavigationController.PushViewController(aViewController, true);
@@ -219,6 +259,12 @@ namespace iOSClient
 			}
 		}
 
+		/// <summary>
+		/// Updates the status.
+		/// </summary>
+		/// <param name="text">Text.</param>
+		/// <param name="tColor">T color.</param>
+		/// <param name="bColor">B color.</param>
 		void UpdateStatus (string text, UIColor tColor, UIColor bColor)
 		{
 			StatusLabel.Text = text;

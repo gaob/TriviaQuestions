@@ -29,6 +29,7 @@ namespace iOSClient
 
 				Debug.Assert(PlayerID.Length > 0);
 
+				// Upon loading, retrieve the high scores.
 				var resultJson = await client.ServiceClient.InvokeApiAsync ("highscore", HttpMethod.Get, new Dictionary<string, string>{{"playerid", PlayerID}});
 
 				foreach (var item in resultJson) {
@@ -45,6 +46,7 @@ namespace iOSClient
 				} else {
 					tableItems = new string[SItems.Count];
 
+					// Add each score to the table.
 					for (int i=0;i<tableItems.Length;i++) {
 						tableItems[i] = SItems[i].ToString();
 					}
