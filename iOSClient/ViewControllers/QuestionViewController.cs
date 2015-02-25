@@ -244,25 +244,29 @@ namespace iOSClient
 				{
 					// Extract the value from the result
 					int score = resultJson.Value<int>("score");
-					int highscorebeat = resultJson.Value<int>("highscorebeat");
 
-					string highscorebeat_text = string.Empty;
+					//If returned score is -1, means the player quits the game before it ends.
+					if (score != -1) {
+						int highscorebeat = resultJson.Value<int>("highscorebeat");
 
-					if (highscorebeat != -1) {
-						if (highscorebeat == 0) {
-							highscorebeat_text = "\n New High Score!";
-						} else if (highscorebeat == 1) {
-							highscorebeat_text = "\n Congratulations you beat your highest score!";
-						} else if (highscorebeat == 2) {
-							highscorebeat_text = "\n Congratulations you beat your 2nd high score!";
-						} else if (highscorebeat == 3) {
-							highscorebeat_text = "\n Congratulations you beat your 3rd high score!";
-						} else {
-							highscorebeat_text = "\n Congratulations you beat your " + highscorebeat + "th high score!";
+						string highscorebeat_text = string.Empty;
+
+						if (highscorebeat != -1) {
+							if (highscorebeat == 0) {
+								highscorebeat_text = "\n New High Score!";
+							} else if (highscorebeat == 1) {
+								highscorebeat_text = "\n Congratulations you beat your highest score!";
+							} else if (highscorebeat == 2) {
+								highscorebeat_text = "\n Congratulations you beat your 2nd high score!";
+							} else if (highscorebeat == 3) {
+								highscorebeat_text = "\n Congratulations you beat your 3rd high score!";
+							} else {
+								highscorebeat_text = "\n Congratulations you beat your " + highscorebeat + "th high score!";
+							}
 						}
-					}
 
-					TQText.Text = "Total Score: " + score.ToString() + highscorebeat_text;
+						TQText.Text = "Total Score: " + score.ToString() + highscorebeat_text;
+					}
 
 					SQLiteHelper.db.DropTable<SessionItem>();
 					SQLiteHelper.db.DropTable<SessionQuestionItem>();
