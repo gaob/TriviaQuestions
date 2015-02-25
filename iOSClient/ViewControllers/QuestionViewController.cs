@@ -29,6 +29,8 @@ namespace iOSClient
 		{
 			base.ViewDidLoad();
 
+			this.NavigationItem.SetHidesBackButton (true, false);
+
 			try
 			{
 				// Perform any additional setup after loading the view, typically from a nib.
