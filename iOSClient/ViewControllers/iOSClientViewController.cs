@@ -53,15 +53,54 @@ namespace iOSClient
 				Debug.Assert (table.Count() < 2);
 
 				if (table.Count() == 1) {
+					UpdateStatus("Resuming the previous game...", UIColor.White, UIColor.Orange);
+
 					PlayerID = table.First ().playerid;
 					SessionID = table.First ().sessionid;
 
 					TEmail.Text = PlayerID;
 
+					var question = from q in SQLiteHelper.db.Table<SessionQuestionItem> ()
+							where (q.sessionid == SessionID)
+						select q;
+
+					if (question.Count() == 0) throw new Exception("Invalid code path!");
+
+					TtriviaQCount.Text = question.Count().ToString();
+
 					var resultJson = await client.ServiceClient.InvokeApiAsync ("playerprogress", HttpMethod.Get, 
 						new Dictionary<string, string>{{"playerid", PlayerID}, {"gamesessionid", SessionID}});
 
-					//Check if need to use resultJson
+					//Check consistency.
+					string temp_id = string.Empty;
+					string temp_ans = string.Empty;
+					SessionQuestionItem SQItem = null;
+
+					foreach (var item in resultJson)
+					{
+						if (item is JObject) {
+							temp_id = item.Value<string> ("id");
+							temp_ans = item.Value<string> ("proposedAnswer");
+							SQItem = question.Where(x => x.questionid == temp_id).FirstOrDefault();
+							if (temp_ans == "?") {
+								if (SQItem.proposedAnswer != "?" && SQItem.proposedAnswer != "!") {
+									throw new Exception("Inconsistency!");
+								}
+							} else if (SQItem.proposedAnswer != temp_ans) {
+								throw new Exception("Inconsistency!");
+							}
+						} else {
+							throw new Exception("Unexpected type in resultQuestions");
+						}
+					}
+
+					QuestionViewController aViewController = this.Storyboard.InstantiateViewController("QuestionViewController") as QuestionViewController;
+					if (aViewController != null) {
+						UpdateStatus(string.Empty, UIColor.White, UIColor.White);
+						this.NavigationController.PushViewController(aViewController, true);
+					} else {
+						StatusLabel.Text = "Start Game Error!";
+					}
 				} else {
 					TtriviaQCount.Text = triviaQCount.ToString();
 				}
