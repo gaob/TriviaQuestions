@@ -68,13 +68,9 @@ namespace iOSClient
 			}
 			catch (Exception ex)
 			{
-				// Display the exception message for the demo
-				StatusLabel.Text = ex.Message;
-				StatusLabel.BackgroundColor = UIColor.Red;
+				// Display the exception message
+				UpdateStatus (ex.Message, UIColor.White, UIColor.Red);
 			}
-
-			CallAPIGetButton.TouchUpInside += CallAPIGetButton_TouchUpInside;
-			CallAPIPostButton.TouchUpInside += CallAPIPostButton_TouchUpInside;
         }
 
 		public static void ResetSession()
@@ -119,9 +115,6 @@ namespace iOSClient
 							throw new Exception("Unexpected type in resultQuestions");
 						}
 					}
-
-					// Set the text block with the result
-					OutputLabel.Text = Questions.Count.ToString();
 				}
 				else
 				{
@@ -187,121 +180,12 @@ namespace iOSClient
 			}
 		}
 
-        async void CallAPIGetButton_TouchUpInside(object sender, EventArgs e)
-        {
-            try
-            {
-                StatusLabel.Text = "GET Request Made, waiting for response...";
-                StatusLabel.TextColor = UIColor.White;
-                StatusLabel.BackgroundColor = UIColor.Blue;
-
-                // Let the user know something is happening
-
-
-                // Make the call to the hello resource asynchronously 
-                var resultJson = await client.ServiceClient.InvokeApiAsync("triviaquestions", HttpMethod.Get, null);
-
-                // Understanding color in iOS http://www.iosing.com/2011/11/uicolor-understanding-colour-in-ios/
-                // A dark green: http://www.colorpicker.com/
-                StatusLabel.BackgroundColor = UIColor.FromRGB(9, 125, 2);
-
-                StatusLabel.Text = "Request completed!";
-
-                // Verfiy that a result was returned
-                if (resultJson.HasValues)
-                {
-					foreach (var item in resultJson)
-					{
-						if (item is JObject) {
-							Questions.Add(new QuestionItem(item as JObject));
-						} else {
-							throw new Exception("Unexpected type in resultJson");
-						}
-					}
-
-					// Extract the value from the result
-					string messageResult = Questions.Count.ToString();
-
-					// Set the text block with the result
-					OutputLabel.Text = messageResult;
-                }
-                else
-                {
-                    StatusLabel.TextColor = UIColor.Black;
-                    StatusLabel.BackgroundColor = UIColor.Orange;
-                    OutputLabel.Text = "Nothing returned!";
-                }
-            }
-            catch (Exception ex)
-            {
-                // Display the exception message for the demo
-                OutputLabel.Text = "";
-                StatusLabel.Text = ex.Message;
-                StatusLabel.BackgroundColor = UIColor.Red;
-
-            }
-
-            finally
-            {
-                // Let the user know the operation has completed
-            }
-        }
-
-        async void CallAPIPostButton_TouchUpInside(object sender, EventArgs e)
-        {
-            try
-            {
-                StatusLabel.Text = "POST Request Made, waiting for response...";
-                StatusLabel.TextColor = UIColor.White;
-                StatusLabel.BackgroundColor = UIColor.Blue;
-
-                // Let the user know something is happening
-
-
-                // Create the json to send using an anonymous type 
-                JToken payload = JObject.FromObject(new { msg = "hello joe" });
-                // Make the call to the hello resource asynchronously using POST verb
-                var resultJson = await client.ServiceClient.InvokeApiAsync("hello", payload);
-
-                // Understanding color in iOS http://www.iosing.com/2011/11/uicolor-understanding-colour-in-ios/
-                // A dark green: http://www.colorpicker.com/
-                StatusLabel.BackgroundColor = UIColor.FromRGB(9, 125, 2);
-
-                StatusLabel.Text = "Request completed!";
-
-                // Verfiy that a result was returned
-                if (resultJson.HasValues)
-                {
-                    // Extract the value from the result
-                    string messageResult = resultJson.Value<string>("message");
-
-                    // Set the text block with the result
-                    OutputLabel.Text = messageResult;
-                }
-                else
-                {
-                    StatusLabel.TextColor = UIColor.Black;
-                    StatusLabel.BackgroundColor = UIColor.Orange;
-                    OutputLabel.Text = "Nothing returned!";
-                }
-
-
-            }
-            catch (Exception ex)
-            {
-                // Display the exception message for the demo
-                OutputLabel.Text = "";
-                StatusLabel.Text = ex.Message;
-                StatusLabel.BackgroundColor = UIColor.Red;
-
-            }
-
-            finally
-            {
-                // Let the user know the operaion has completed
-            }
-        }
-
+		void UpdateStatus (string text, UIColor tColor, UIColor bColor)
+		{
+			StatusLabel.Text = text;
+			StatusLabel.TextColor = tColor;
+			StatusLabel.BackgroundColor = bColor;
+		}
 
         public override void ViewWillAppear(bool animated)
         {

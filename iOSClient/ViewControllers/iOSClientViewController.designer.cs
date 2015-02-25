@@ -24,23 +24,11 @@ namespace iOSClient
 
 		[Outlet]
 		[GeneratedCode ("iOS Designer", "1.0")]
-		UIButton CallAPIGetButton { get; set; }
-
-		[Outlet]
-		[GeneratedCode ("iOS Designer", "1.0")]
-		UIButton CallAPIPostButton { get; set; }
-
-		[Outlet]
-		[GeneratedCode ("iOS Designer", "1.0")]
 		UILabel LEmail { get; set; }
 
 		[Outlet]
 		[GeneratedCode ("iOS Designer", "1.0")]
 		UILabel LtriviaQCount { get; set; }
-
-		[Outlet]
-		[GeneratedCode ("iOS Designer", "1.0")]
-		UILabel OutputLabel { get; set; }
 
 		[Outlet]
 		[GeneratedCode ("iOS Designer", "1.0")]
@@ -72,14 +60,6 @@ namespace iOSClient
 				BViewHighScore.Dispose ();
 				BViewHighScore = null;
 			}
-			if (CallAPIGetButton != null) {
-				CallAPIGetButton.Dispose ();
-				CallAPIGetButton = null;
-			}
-			if (CallAPIPostButton != null) {
-				CallAPIPostButton.Dispose ();
-				CallAPIPostButton = null;
-			}
 			if (LEmail != null) {
 				LEmail.Dispose ();
 				LEmail = null;
@@ -87,10 +67,6 @@ namespace iOSClient
 			if (LtriviaQCount != null) {
 				LtriviaQCount.Dispose ();
 				LtriviaQCount = null;
-			}
-			if (OutputLabel != null) {
-				OutputLabel.Dispose ();
-				OutputLabel = null;
 			}
 			if (StatusLabel != null) {
 				StatusLabel.Dispose ();
