@@ -162,7 +162,7 @@ namespace iOSClient
 					} else {
 						throw new Exception("Invalid path!");
 					}
-
+						
 					UpdateStatus("Click anywhere to the next question", UIColor.Blue, UIColor.Green);
 					Bcover.Hidden = false;
 
@@ -247,15 +247,15 @@ namespace iOSClient
 
 						if (highscorebeat != -1) {
 							if (highscorebeat == 0) {
-								highscorebeat_text = "\n New High Score!";
+								highscorebeat_text = "\nNew High Score!";
 							} else if (highscorebeat == 1) {
-								highscorebeat_text = "\n Congratulations you beat your highest score!";
+								highscorebeat_text = "\nCongratulations you beat your highest score!";
 							} else if (highscorebeat == 2) {
-								highscorebeat_text = "\n Congratulations you beat your 2nd high score!";
+								highscorebeat_text = "\nCongratulations you beat your 2nd high score!";
 							} else if (highscorebeat == 3) {
-								highscorebeat_text = "\n Congratulations you beat your 3rd high score!";
+								highscorebeat_text = "\nCongratulations you beat your 3rd high score!";
 							} else {
-								highscorebeat_text = "\n Congratulations you beat your " + highscorebeat + "th high score!";
+								highscorebeat_text = "\nCongratulations you beat your " + highscorebeat + "th high score!";
 							}
 						}
 
@@ -268,6 +268,10 @@ namespace iOSClient
 
 					Finished = true;
 
+					Bone.SetTitle (string.Empty, UIControlState.Normal);
+					Btwo.SetTitle (string.Empty, UIControlState.Normal);
+					Bthree.SetTitle (string.Empty, UIControlState.Normal);
+					Bfour.SetTitle (string.Empty, UIControlState.Normal);
 					UpdateStatus("Click anywhere to go back", UIColor.Blue, UIColor.Green);
 				}
 				else
