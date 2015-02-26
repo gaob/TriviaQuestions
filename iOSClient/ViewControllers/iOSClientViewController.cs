@@ -152,6 +152,7 @@ namespace iOSClient
 
 			try
 			{
+				UpdateStatus("Starting game...", UIColor.White, UIColor.Orange);
 				triviaQCount = int.Parse(TtriviaQCount.Text);
 
 				if (triviaQCount <= 0 || triviaQCount > 30) {
