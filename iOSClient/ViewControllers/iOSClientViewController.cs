@@ -43,6 +43,8 @@ namespace iOSClient
         {
             base.ViewDidLoad();
 
+			UpdateStatus(string.Empty, UIColor.White, UIColor.White);
+
 			try
 			{
 	            // Perform any additional setup after loading the view, typically from a nib.
@@ -225,6 +227,7 @@ namespace iOSClient
 				// Start the game.
 				QuestionViewController aViewController = this.Storyboard.InstantiateViewController("QuestionViewController") as QuestionViewController;
 				if (aViewController != null) {
+					UpdateStatus(string.Empty, UIColor.White, UIColor.White);
 					this.NavigationController.PushViewController(aViewController, true);
 				} else {
 					StatusLabel.Text = "Start Game Error!";
